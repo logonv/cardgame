@@ -17,7 +17,7 @@ struct ContentView: View {
     @State var playerhand: [card] = []
     var deck1: deck = deck()
 
-    @State var playerChips: Int = 100
+    @State var playerChips: Int = 90
 
     @State var playerName: String = "Player Name"
     @State var amounttobet: Int = 50
@@ -104,40 +104,48 @@ struct ContentView: View {
                     }
                 }
                 
-                
-                Button(action: {
-                print("bet pressed")
-                    if self.playerHasBet==false{
-                        self.checkBetAllowedReturnBet(bet: self.amounttobet, remainingChips: self.playerChips)
-                        if self.betAllowed == true{
-                            self.playerChips = self.playerChips - self.amounttobet
-                            self.betamount=self.amounttobet
-                            self.playerHasBet=true
-                            self.playerAskingForCards=true
-                            if self.doingInitialDeal == true{
-                                self.initialDeal()
-                                self.cardsdealt = true
-                                self.doingInitialDeal = false
+                if alreadyBetAlert==false{
+                    Button(action: {
+                    print("bet pressed")
+                        if self.playerHasBet==false{
+                            self.alreadyBetAlert=false
+                            self.checkBetAllowedReturnBet(bet: self.amounttobet, remainingChips: self.playerChips)
+                            if self.betAllowed == true{
+                                self.playerChips = self.playerChips - self.amounttobet
+                                self.betamount=self.amounttobet
+                                self.playerHasBet=true
+                                self.playerAskingForCards=true
+                                self.alreadyBetAlert=true
+                                if self.doingInitialDeal == true{
+                                    self.initialDeal()
+                                    self.cardsdealt = true
+                                    self.doingInitialDeal = false
+                                    
+                                }
                                 
+                            }
+                            else{
+                                self.showBetAlert=true
                             }
                             
                         }
                         else{
-                            self.showBetAlert=true
+                            self.alreadyBetAlert=true
+                            
                         }
                         
-                    }
-                    else{
-                        self.alreadyBetAlert=true
-                    }
+                    }) {Text("Bet")}
+                        .alert(isPresented: $showBetAlert) { () -> Alert in
+                            Alert(title: Text("You do not have enough chips. Choose another amount"), dismissButton: .default(Text("Dismiss")))
+                        }
                     
-                }) {Text("Bet")}
-                    .alert(isPresented: $showBetAlert) { () -> Alert in
-                        Alert(title: Text("You do not have enough chips. Choose another amount"), dismissButton: .default(Text("Dismiss")))
                 }
+                    /*
                     .alert(isPresented: $alreadyBetAlert) { () -> Alert in
                         Alert(title: Text("You  have already bet."), dismissButton: .default(Text("Dismiss")))
                 }
+ */
+ 
                 
                 
                 Button(action: {
@@ -253,7 +261,7 @@ struct ContentView: View {
                     VStack{
                     Text("Bet allowed " + String(self.betAllowed))
                     Text("Amount to bet " + String(self.amounttobet))
-                    Text("Show bet aler t" + String(self.showBetAlert))
+                    Text("Show bet alert" + String(self.showBetAlert))
                     Text("Player has bet " + String(self.playerHasBet))
                     Text("ALready bet alert " + String(self.alreadyBetAlert))
                     Text("cardsdealt " + String(self.cardsdealt))

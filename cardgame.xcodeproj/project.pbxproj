@@ -13,6 +13,8 @@
 		56B802B6240781FE00C7EA88 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56B802B5240781FE00C7EA88 /* Assets.xcassets */; };
 		56B802B9240781FE00C7EA88 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56B802B8240781FE00C7EA88 /* Preview Assets.xcassets */; };
 		56B802BC240781FE00C7EA88 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56B802BA240781FE00C7EA88 /* LaunchScreen.storyboard */; };
+		56B802C4240782EB00C7EA88 /* card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B802C3240782EB00C7EA88 /* card.swift */; };
+		56B802C6240791D600C7EA88 /* deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B802C5240791D600C7EA88 /* deck.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,9 @@
 		56B802B8240781FE00C7EA88 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		56B802BB240781FE00C7EA88 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		56B802BD240781FE00C7EA88 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		56B802C3240782EB00C7EA88 /* card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = card.swift; sourceTree = "<group>"; };
+		56B802C5240791D600C7EA88 /* deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = deck.swift; sourceTree = "<group>"; };
+		56B802C72407C75000C7EA88 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +45,9 @@
 		56B802A3240781FD00C7EA88 = {
 			isa = PBXGroup;
 			children = (
+				56B802C72407C75000C7EA88 /* MyPlayground.playground */,
+				56B802C3240782EB00C7EA88 /* card.swift */,
+				56B802C5240791D600C7EA88 /* deck.swift */,
 				56B802AE240781FD00C7EA88 /* cardgame */,
 				56B802AD240781FD00C7EA88 /* Products */,
 			);
@@ -149,6 +157,8 @@
 				56B802B0240781FD00C7EA88 /* AppDelegate.swift in Sources */,
 				56B802B2240781FD00C7EA88 /* SceneDelegate.swift in Sources */,
 				56B802B4240781FD00C7EA88 /* ContentView.swift in Sources */,
+				56B802C6240791D600C7EA88 /* deck.swift in Sources */,
+				56B802C4240782EB00C7EA88 /* card.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

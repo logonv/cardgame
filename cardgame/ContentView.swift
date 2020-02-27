@@ -10,22 +10,27 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var card1: card = card(rank: .joker, suit: .clubs)
-    @State var card2: card = card(rank: .joker, suit: .clubs)
-    @State var card3: card = card(rank: .joker, suit: .clubs)
+    //@State var card1: card = card(rank: .joker, suit: .clubs)
+    //@State var card2: card = card(rank: .joker, suit: .clubs)
+    //@State var card3: card = card(rank: .joker, suit: .clubs)
     @State var dealerhand: [card] = []
     @State var playerhand: [card] = []
     var deck1: deck = deck()
+
+    @State var playerChips: Int = 100
+
+    @State var playerName: String = "Player Name"
+    @State var amounttobet: Int = 50
+    @State var betamount: Int = 50
+    @State var slidervalue: Double = 50.0
+    @State var betAllowed: Bool = false
+    @State var showBetAlert: Bool = false
+    @State var playerHasBet: Bool = false
+    @State var alreadyBetAlert: Bool=false
     @State var cardsdealt: Bool = false
     @State var showdealerhandbool: Bool = false
     @State var doingInitialDeal: Bool=true
     @State var playerAskingForCards: Bool = false
-    @State var playerChips: Int = 100
-
-    @State var playerName: String = "Player Name"
-    @State var amounttobet: Int = 5
-    @State var betAllowed: Bool = false
-    @State var slidervalue: Double = 50.0
     
     func checkBetAllowedReturnBet( bet: Int, remainingChips: Int) -> Int{
         
@@ -55,6 +60,7 @@ struct ContentView: View {
         self.dealerhand.append(self.deck1.dealCard())
         self.dealerhand.append(self.deck1.dealCard())
         self.playerAskingForCards=true
+        self.amounttobet=Int(self.slidervalue)
     }
     
     func totalBlackJackHand( hand: Array<card>)-> Int{
@@ -97,23 +103,50 @@ struct ContentView: View {
                         }
                     }
                 }
+                
+                
                 Button(action: {
                 print("bet pressed")
-                    self.checkBetAllowedReturnBet(bet: self.amounttobet, remainingChips: self.playerChips)
-                    if self.betAllowed == true{
-                        self.playerChips = self.playerChips - self.amounttobet
-                    }
-                    else{
+                    if self.playerHasBet==false{
+                        self.checkBetAllowedReturnBet(bet: self.amounttobet, remainingChips: self.playerChips)
+                        if self.betAllowed == true{
+                            self.playerChips = self.playerChips - self.amounttobet
+                            self.betamount=self.amounttobet
+                            self.playerHasBet=true
+                            self.playerAskingForCards=true
+                            if self.doingInitialDeal == true{
+                                self.initialDeal()
+                                self.cardsdealt = true
+                                self.doingInitialDeal = false
+                                
+                            }
+                            
+                        }
+                        else{
+                            self.showBetAlert=true
+                        }
                         
                     }
+                    else{
+                        self.alreadyBetAlert=true
+                    }
+                    
                 }) {Text("Bet")}
+                    .alert(isPresented: $showBetAlert) { () -> Alert in
+                        Alert(title: Text("You do not have enough chips. Choose another amount"), dismissButton: .default(Text("Dismiss")))
+                }
+                    .alert(isPresented: $alreadyBetAlert) { () -> Alert in
+                        Alert(title: Text("You  have already bet."), dismissButton: .default(Text("Dismiss")))
+                }
                 
                 
                 Button(action: {
                     print("Shuffle pressed")
                     self.deck1.shuffleDeck()
                     }) {Text("Shuffle")}
+
                 
+                /*
                 Button(action: {
                     print("Deal pressed")
                     if self.doingInitialDeal == true{
@@ -122,6 +155,8 @@ struct ContentView: View {
                         self.doingInitialDeal = false
                     }
                 }) {Text("Deal")}
+
+                 */
                 
                 Button(action: {
                 print("show dealer hand pressed")
@@ -142,6 +177,12 @@ struct ContentView: View {
                 Button(action: {
                 print("reset game")
                     self.cardsdealt=false
+                    self.alreadyBetAlert=false
+                    self.showBetAlert=false
+                    self.playerHasBet=false
+                    self.playerAskingForCards=false
+
+                    
                     self.deck1.resetDeck()
                     self.dealerhand=[]
                     self.playerhand=[]
@@ -166,10 +207,27 @@ struct ContentView: View {
                 
                 HStack{
                     Button(action: {
-                        self.playerhand.append(self.deck1.dealCard())
+                        if self.playerAskingForCards==true{
+                            self.playerhand.append(self.deck1.dealCard())
+                            if self.checkIfBust(hand: self.playerhand)==true{
+                                print("bust")
+                                
+                                self.cardsdealt=false
+                                self.alreadyBetAlert=false
+                                self.showBetAlert=false
+                                self.playerHasBet=false
+                                self.playerAskingForCards=false
+                                self.deck1.resetDeck()
+                                self.dealerhand=[]
+                                self.playerhand=[]
+                                self.doingInitialDeal=true
+                            }
+                        }
+                        
                     }) {
                         Text("Hit")
                     }
+                    
                     Button(action: {
                         self.playerAskingForCards=false
                     }) {
@@ -181,15 +239,29 @@ struct ContentView: View {
                
                 
                 VStack {
-                    
+                    VStack{
+                    Text("Player name " + self.playerName)
+                    Text("Chips " + String(self.playerChips))
+                    Text("Bet amount" + String(betamount))
+                    Text("Bool check")
                     Text("Check if bust " + String(checkIfBust(hand: playerhand)))
                     Text("showdealerhandbool " + String(self.showdealerhandbool))
                     Text("cardsdealt " + String(self.cardsdealt))
-                    Text("doingInitialDeal " + String(self.doingInitialDeal))
-                    Text("Player name " + self.playerName)
-                    Text("Chips " + String(self.playerChips))
-                    Text("Bet allowed" + String(self.betAllowed))
-                    Text("Amount to bet" + String(amounttobet))
+                        Text("doingInitialDeal " + String(self.doingInitialDeal))
+                        
+                    }
+                    VStack{
+                    Text("Bet allowed " + String(self.betAllowed))
+                    Text("Amount to bet " + String(self.amounttobet))
+                    Text("Show bet aler t" + String(self.showBetAlert))
+                    Text("Player has bet " + String(self.playerHasBet))
+                    Text("ALready bet alert " + String(self.alreadyBetAlert))
+                    Text("cardsdealt " + String(self.cardsdealt))
+                    Text("showerdealerhandbool " + String(self.showdealerhandbool))
+                    Text("doing inital deal " + String(self.doingInitialDeal))
+                    Text("player asking for cards " + String(playerAskingForCards))
+                    }
+                         
                     HStack{
                         Text("0")
                         Slider(value: $slidervalue, in: 0...100, step: 0.1, onEditingChanged:{_ in self.amounttobet=Int(self.slidervalue)} )
@@ -198,10 +270,7 @@ struct ContentView: View {
                         Text("100")
                     }
                 }
-               /*
-               
- */
-
+ 
               
                 
             }//end of VStack

@@ -21,7 +21,7 @@ struct ContentView: View {
 
     @State var playerName: String = "Player Name"
     @State var amounttobet: Int = 50
-    @State var betamount: Int = 50
+    @State var betamount: Int = 0
     @State var slidervalue: Double = 50.0
     @State var betAllowed: Bool = false
     @State var showBetAlert: Bool = false
@@ -32,6 +32,7 @@ struct ContentView: View {
     @State var doingInitialDeal: Bool=true
     @State var playerAskingForCards: Bool = false
     @State var playerHasBustAlert: Bool = false
+    @State var dealerPlaying: Bool = false
     
     func checkBetAllowedReturnBet( bet: Int, remainingChips: Int) -> Int{
         
@@ -110,10 +111,9 @@ struct ContentView: View {
                     print("bet pressed")
                         if self.playerHasBet==false{
                             self.alreadyBetAlert=false
-                            self.checkBetAllowedReturnBet(bet: self.amounttobet, remainingChips: self.playerChips)
+                            self.betamount=self.checkBetAllowedReturnBet(bet: self.amounttobet, remainingChips: self.playerChips)
                             if self.betAllowed == true{
-                                self.playerChips = self.playerChips - self.amounttobet
-                                self.betamount=self.amounttobet
+                                self.playerChips = self.playerChips - self.betamount
                                 self.playerHasBet=true
                                 self.playerAskingForCards=true
                                 self.alreadyBetAlert=true
@@ -238,34 +238,46 @@ struct ContentView: View {
                     }
                     
                     Button(action: {
-                        self.playerAskingForCards=false
-                        /*
-                        while self.totalBlackJackHand(hand: self.dealerhand)<self.totalBlackJackHand(hand: self.playerhand){
-                            self.dealerhand.append(self.deck1.dealCard())
-                           
-                            if self.checkIfBust(hand: self.dealerhand)==true{
-                                print("bust")
-                                self.playerChips=self.playerChips+self.betamount
-                            }
-                            
-                        }
-                        */
+                        
+                        self.playerAskingForCards = false
+                        self.dealerPlaying = true
+                        self.showdealerhandbool = true
+                        
                     }) {
                         Text("Stick")
                     }
+                    if self.dealerPlaying==true{
                     Button(action: {
                         
-                        if self.totalBlackJackHand(hand: self.dealerhand)<self.totalBlackJackHand(hand: self.playerhand){
-                            self.dealerhand.append(self.deck1.dealCard())
-                           
-                            if self.checkIfBust(hand: self.dealerhand)==true{
-                                print("bust")
-                                self.playerChips=self.playerChips+2*self.betamount
+                            
+                            if self.totalBlackJackHand(hand: self.dealerhand)<self.totalBlackJackHand(hand: self.playerhand){
+                                self.dealerhand.append(self.deck1.dealCard())
+                               
+                                if self.checkIfBust(hand: self.dealerhand)==true{
+                                    print("bust")
+                                    self.playerChips=self.playerChips+2*self.betamount
+                                    self.dealerPlaying = false
+                                }
+                                
+                                
                             }
                             
-                        }
+                            if self.totalBlackJackHand(hand: self.dealerhand)==self.totalBlackJackHand(hand: self.playerhand){
+                                print("This is a split pot. Player does not lose anything")
+                                self.playerChips=self.playerChips+self.betamount
+                                self.dealerPlaying = false
+                            }
+                            
+                            if self.totalBlackJackHand(hand: self.dealerhand)>self.totalBlackJackHand(hand: self.playerhand){
+                                print("dealer wins")
+                                self.dealerPlaying = false
+                                }
+                            
+                        
                     }) {
                         Text("Dealer go")
+                        }
+                        
                     }
                     
                     

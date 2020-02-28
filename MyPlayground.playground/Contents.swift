@@ -8,13 +8,13 @@ enum Suit {
     func simpleDescription() -> String {
         switch self {
         case .spades:
-            return "Spades"
+            return "spades"
         case .hearts:
-            return "Hearts"
+            return "hearts"
         case .diamonds:
-            return "Diamonds"
+            return "diamonds"
         case .clubs:
-            return "Clubs"
+            return "clubs"
         }
     }
     
@@ -78,7 +78,7 @@ struct card {
     }
  */
    func simpleDescription() -> String {
-    return "the \(rank.simpleDescription()) of \(suit.simpleDescription())."
+    return "\(rank.simpleDescription())_of_\(suit.simpleDescription())"
     }
 }
 
@@ -93,10 +93,6 @@ class deck {
                 self.deckOfCards.append(card(rank:rank, suit: suit))
             }
         }
-        self.deckOfCards.removeLast()
-        self.deckOfCards.removeLast()
-        self.deckOfCards.removeLast()
-        self.deckOfCards.removeLast()
     }
     func dealCard() -> card{
         return deckOfCards.removeLast()

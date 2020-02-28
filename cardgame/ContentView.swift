@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    //@State var card1: card = card(rank: .joker, suit: .clubs)
+    //@State var card1: card = card(rank: .five, suit: .clubs)
     //@State var card2: card = card(rank: .joker, suit: .clubs)
     //@State var card3: card = card(rank: .joker, suit: .clubs)
     @State var dealerhand: [card] = []
@@ -98,21 +98,34 @@ struct ContentView: View {
     var body: some View {
         
         ZStack{
+            Image("Background")
+            
             VStack{
+                
+                
                 
                 VStack{
                 //dealer cards hstack
                 HStack{
                     if self.cardsdealt == true{
                         if showdealerhandbool == false{
-                            Text("back of card")
+                            Image("back")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
                         }
                         else{
-                            Text(self.dealerhand[0].simpleDescription())
+                            Image(self.dealerhand[0].simpleDescription())
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
                         }
                         
                         ForEach(1..<dealerhand.count, id: \.self){
-                            number in Text(self.dealerhand[number].simpleDescription())
+                            number in Image(self.dealerhand[number].simpleDescription())
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
                         }
                     }
                     }
@@ -194,7 +207,10 @@ struct ContentView: View {
                 HStack{
                     if self.cardsdealt == true{
                         ForEach(0..<playerhand.count, id: \.self){
-                            number in Text(self.playerhand[number].simpleDescription())
+                            number in Image(self.playerhand[number].simpleDescription())
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
                         }
                     }
                 }

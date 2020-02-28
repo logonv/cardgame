@@ -33,6 +33,9 @@ struct ContentView: View {
     @State var playerAskingForCards: Bool = false
     @State var playerHasBustAlert: Bool = false
     @State var dealerPlaying: Bool = false
+    @State var playerPlaying: Bool = false
+    
+    @State private var showingAlert = false
     
     func checkBetAllowedReturnBet( bet: Int, remainingChips: Int) -> Int{
         
@@ -91,6 +94,9 @@ struct ContentView: View {
         
         ZStack{
             VStack{
+                
+                
+                //dealer cards hstack
                 HStack{
                     if self.cardsdealt == true{
                         if showdealerhandbool == false{
@@ -106,47 +112,10 @@ struct ContentView: View {
                     }
                 }
                 
-                if alreadyBetAlert==false{
-                    Button(action: {
-                    print("bet pressed")
-                        if self.playerHasBet==false{
-                            self.alreadyBetAlert=false
-                            self.betamount=self.checkBetAllowedReturnBet(bet: self.amounttobet, remainingChips: self.playerChips)
-                            if self.betAllowed == true{
-                                self.playerChips = self.playerChips - self.betamount
-                                self.playerHasBet=true
-                                self.playerAskingForCards=true
-                                self.alreadyBetAlert=true
-                                if self.doingInitialDeal == true{
-                                    self.initialDeal()
-                                    self.cardsdealt = true
-                                    self.doingInitialDeal = false
-                                    
-                                }
-                                
-                            }
-                            else{
-                                self.showBetAlert=true
-                            }
-                            
-                        }
-                        else{
-                            self.alreadyBetAlert=true
-                            
-                        }
-                        
-                    }) {Text("Bet")}
-                        .alert(isPresented: $showBetAlert) { () -> Alert in
-                            Alert(title: Text("You do not have enough chips. Choose another amount"), dismissButton: .default(Text("Dismiss")))
-                        }
-                    
-                }
-                    /*
-                    .alert(isPresented: $alreadyBetAlert) { () -> Alert in
-                        Alert(title: Text("You  have already bet."), dismissButton: .default(Text("Dismiss")))
-                }
- */
- 
+                //bet button
+                
+                
+                //shuffle button
                 Button(action: {
                     print("Shuffle pressed")
                     self.deck1.shuffleDeck()
@@ -154,6 +123,7 @@ struct ContentView: View {
 
                 
                 /*
+                // deal button
                 Button(action: {
                     print("Deal pressed")
                     if self.doingInitialDeal == true{
@@ -165,6 +135,7 @@ struct ContentView: View {
 
                  */
                 
+                //show dealer hand button
                 Button(action: {
                 print("show dealer hand pressed")
                 self.showdealerhandbool.toggle() // = true
@@ -172,6 +143,7 @@ struct ContentView: View {
                 }) {Text("Show dealer hand")}
                 
                 /*
+                //clear hand button
                 Button(action: {
                 print("clear hand")
                 self.dealerhand=[]
@@ -181,6 +153,7 @@ struct ContentView: View {
                 }) {Text("clear hand")}
                 */
                 
+                //reset game button
                 Button(action: {
                 print("reset game")
                     self.playerHasBustAlert=false
@@ -189,8 +162,9 @@ struct ContentView: View {
                     self.showBetAlert=false
                     self.playerHasBet=false
                     self.playerAskingForCards=false
-
-                    
+                    self.dealerPlaying=false
+                    self.betAllowed=true
+                    self.showdealerhandbool=false
                     self.deck1.resetDeck()
                     self.dealerhand=[]
                     self.playerhand=[]
@@ -199,10 +173,11 @@ struct ContentView: View {
                     //self.showdealerhandbool.toggle() // = true
                 }) {Text("reset game")}
                 
+                //number of cards in deck
                 HStack{
                     Text("Cards left: " + String(self.deck1.numberOfCards()))
                 }
-                
+                //player hand hstack
                 HStack{
                     if self.cardsdealt == true{
                         ForEach(0..<playerhand.count, id: \.self){
@@ -211,83 +186,19 @@ struct ContentView: View {
                     }
                 }
                 
-                HStack{
-                    Button(action: {
-                        if self.playerAskingForCards==true{
-                            self.playerhand.append(self.deck1.dealCard())
-                            if self.checkIfBust(hand: self.playerhand)==true{
-                                print("bust")
-                                self.playerHasBustAlert=true
-                                self.cardsdealt=false
-                                self.alreadyBetAlert=false
-                                self.showBetAlert=false
-                                self.playerHasBet=false
-                                self.playerAskingForCards=false
-                                self.deck1.resetDeck()
-                                self.dealerhand=[]
-                                self.playerhand=[]
-                                self.doingInitialDeal=true
-                            }
-                        }
-                        
-                    }) {
-                        Text("Hit")
-                    }
-                    .alert(isPresented: $playerHasBustAlert) { () -> Alert in
-                        Alert(title: Text("You have bust"), dismissButton: .default(Text("Dismiss")))
-                    }
-                    
-                    Button(action: {
-                        
-                        self.playerAskingForCards = false
-                        self.dealerPlaying = true
-                        self.showdealerhandbool = true
-                        
-                    }) {
-                        Text("Stick")
-                    }
-                    if self.dealerPlaying==true{
-                    Button(action: {
-                        
-                            
-                            if self.totalBlackJackHand(hand: self.dealerhand)<self.totalBlackJackHand(hand: self.playerhand){
-                                self.dealerhand.append(self.deck1.dealCard())
-                               
-                                if self.checkIfBust(hand: self.dealerhand)==true{
-                                    print("bust")
-                                    self.playerChips=self.playerChips+2*self.betamount
-                                    self.dealerPlaying = false
-                                }
-                                
-                                
-                            }
-                            
-                            if self.totalBlackJackHand(hand: self.dealerhand)==self.totalBlackJackHand(hand: self.playerhand){
-                                print("This is a split pot. Player does not lose anything")
-                                self.playerChips=self.playerChips+self.betamount
-                                self.dealerPlaying = false
-                            }
-                            
-                            if self.totalBlackJackHand(hand: self.dealerhand)>self.totalBlackJackHand(hand: self.playerhand){
-                                print("dealer wins")
-                                self.dealerPlaying = false
-                                }
-                            
-                        
-                    }) {
-                        Text("Dealer go")
-                        }
-                        
-                    }
-                    
-                    
-                }
                
+                
+               
+                
+                //totals stack
                 VStack{
-                    Text("player Total hand " + String(totalBlackJackHand(hand: playerhand)))
-                    Text("dealer Total hand " + String(totalBlackJackHand(hand: dealerhand)))
+                    Text("Player Total hand " + String(totalBlackJackHand(hand: playerhand)))
+                    //Text("dealer Total hand " + String(totalBlackJackHand(hand: dealerhand)))
                 }
+                
                 VStack {
+                    
+                    /*
                     VStack{
                     Text("Player name " + self.playerName)
                     Text("Chips " + String(self.playerChips))
@@ -297,8 +208,9 @@ struct ContentView: View {
                     Text("showdealerhandbool " + String(self.showdealerhandbool))
                     Text("cardsdealt " + String(self.cardsdealt))
                         Text("doingInitialDeal " + String(self.doingInitialDeal))
-                        
                     }
+                     */
+                    /*
                     VStack{
                     Text("Bet allowed " + String(self.betAllowed))
                     Text("Amount to bet " + String(self.amounttobet))
@@ -311,13 +223,132 @@ struct ContentView: View {
                         Text("player asking for cards " + String(self.playerAskingForCards))
                         Text("player has bust alert" + String(self.playerHasBustAlert))
                     }
-                         
+                    */
+                    HStack{
+                        if self.alreadyBetAlert==false{
+                            Button(action: {
+                            print("bet pressed")
+                                if self.playerHasBet==false{
+                                    self.alreadyBetAlert=false
+                                    self.betamount=self.checkBetAllowedReturnBet(bet: self.amounttobet, remainingChips: self.playerChips)
+                                    if self.betAllowed == true{
+                                        self.playerChips = self.playerChips - self.betamount
+                                        self.playerHasBet=true
+                                        self.playerAskingForCards=true
+                                        self.alreadyBetAlert=true
+                                        self.playerHasBustAlert=false
+                                        self.playerPlaying=true
+                                        
+                                        if self.doingInitialDeal == true{
+                                            self.initialDeal()
+                                            self.cardsdealt = true
+                                            self.doingInitialDeal = false
+                                        }
+                                    }
+                                    else{
+                                        self.showBetAlert=true
+                                    }
+                                }
+                                else{
+                                    self.alreadyBetAlert=true
+                                }
+                            }) {Text("Bet "+String(self.amounttobet))}
+                                .alert(isPresented: $showBetAlert) { () -> Alert in
+                                    Alert(title: Text("You do not have enough chips. Choose another amount"), dismissButton: .default(Text("Dismiss")))
+                                }
+                        }
+                        
+                        if self.alreadyBetAlert==false{
+                            Text("Desired bet: "+String(self.amounttobet) )
+                        }
+                        
+                    }
+                    
                     HStack{
                         Text("0")
                         Slider(value: $slidervalue, in: 0...100, step: 0.1, onEditingChanged:{_ in self.amounttobet=Int(self.slidervalue)} )
-                
                         //self.amounttobet=Int(slidervalue)
                         Text("100")
+                    }
+                    HStack{
+                        Text("Chips: " + String(self.playerChips))
+                    if self.alreadyBetAlert==true{
+                        Text("Bet amount: "+String(self.betamount))
+                        }
+                    }
+                    
+                    HStack{
+                        if self.playerPlaying==true{
+                        Button(action: {
+                            if self.playerAskingForCards==true{
+                                self.playerhand.append(self.deck1.dealCard())
+                                if self.checkIfBust(hand: self.playerhand)==true{
+                                    print("bust")
+                                    
+                                    self.playerHasBustAlert=true
+                                    self.playerPlaying=false
+                                    self.cardsdealt=false
+                                    self.alreadyBetAlert=false
+                                    self.showBetAlert=false
+                                    self.playerHasBet=false
+                                    self.playerAskingForCards=false
+                                    self.dealerPlaying=false
+                                    self.betAllowed=true
+                                    self.showdealerhandbool=false
+                                    self.deck1.resetDeck()
+                                    self.dealerhand=[]
+                                    self.playerhand=[]
+                                    self.doingInitialDeal=true
+                                }
+                            }
+                        }) {Text("Hit")}
+                        .alert(isPresented: $playerHasBustAlert) { () -> Alert in
+                            Alert(title: Text("You have bust"), dismissButton: .default(Text("Dismiss")
+                                ))
+                            
+                        }
+                        
+                        //stick button
+                        Button(action: {
+                            
+                            self.playerAskingForCards = false
+                            self.dealerPlaying = true
+                            self.showdealerhandbool = true
+                            
+                        }) {
+                            Text("Stick")
+                            }
+                            
+                        }
+                        
+                        if self.dealerPlaying==true{
+                            Button(action: {
+                                
+                                if self.totalBlackJackHand(hand: self.dealerhand)<self.totalBlackJackHand(hand: self.playerhand){
+                                    self.dealerhand.append(self.deck1.dealCard())
+                                    if self.checkIfBust(hand: self.dealerhand)==true{
+                                        print("bust")
+                                        self.playerChips=self.playerChips+2*self.betamount
+                                        self.dealerPlaying = false
+                                    }
+                                }
+                                
+                                if self.totalBlackJackHand(hand: self.dealerhand)==self.totalBlackJackHand(hand: self.playerhand){
+                                    print("This is a split pot. Player does not lose anything")
+                                    self.playerChips=self.playerChips+self.betamount
+                                    self.dealerPlaying = false
+                                }
+                                
+                                if self.totalBlackJackHand(hand: self.dealerhand)>self.totalBlackJackHand(hand: self.playerhand){
+                                    print("dealer wins")
+                                    self.dealerPlaying = false
+                                    
+                                }
+                                
+                            }) {
+                            Text("Dealer go")
+                            }
+                        }
                     }
                 }
  

@@ -31,6 +31,7 @@ struct ContentView: View {
     @State var showdealerhandbool: Bool = false
     @State var doingInitialDeal: Bool=true
     @State var playerAskingForCards: Bool = false
+    @State var playerHasBustAlert: Bool = false
     
     func checkBetAllowedReturnBet( bet: Int, remainingChips: Int) -> Int{
         
@@ -146,8 +147,6 @@ struct ContentView: View {
                 }
  */
  
-                
-                
                 Button(action: {
                     print("Shuffle pressed")
                     self.deck1.shuffleDeck()
@@ -184,6 +183,7 @@ struct ContentView: View {
                 
                 Button(action: {
                 print("reset game")
+                    self.playerHasBustAlert=false
                     self.cardsdealt=false
                     self.alreadyBetAlert=false
                     self.showBetAlert=false
@@ -198,8 +198,6 @@ struct ContentView: View {
                     //self.deck1.buildDeck()
                     //self.showdealerhandbool.toggle() // = true
                 }) {Text("reset game")}
-                
-                
                 
                 HStack{
                     Text("Cards left: " + String(self.deck1.numberOfCards()))
@@ -219,7 +217,7 @@ struct ContentView: View {
                             self.playerhand.append(self.deck1.dealCard())
                             if self.checkIfBust(hand: self.playerhand)==true{
                                 print("bust")
-                                
+                                self.playerHasBustAlert=true
                                 self.cardsdealt=false
                                 self.alreadyBetAlert=false
                                 self.showBetAlert=false
@@ -235,17 +233,48 @@ struct ContentView: View {
                     }) {
                         Text("Hit")
                     }
+                    .alert(isPresented: $playerHasBustAlert) { () -> Alert in
+                        Alert(title: Text("You have bust"), dismissButton: .default(Text("Dismiss")))
+                    }
                     
                     Button(action: {
                         self.playerAskingForCards=false
+                        /*
+                        while self.totalBlackJackHand(hand: self.dealerhand)<self.totalBlackJackHand(hand: self.playerhand){
+                            self.dealerhand.append(self.deck1.dealCard())
+                           
+                            if self.checkIfBust(hand: self.dealerhand)==true{
+                                print("bust")
+                                self.playerChips=self.playerChips+self.betamount
+                            }
+                            
+                        }
+                        */
                     }) {
                         Text("Stick")
                     }
-                    Text("Total hand " + String(totalBlackJackHand(hand: playerhand)) )
+                    Button(action: {
+                        
+                        if self.totalBlackJackHand(hand: self.dealerhand)<self.totalBlackJackHand(hand: self.playerhand){
+                            self.dealerhand.append(self.deck1.dealCard())
+                           
+                            if self.checkIfBust(hand: self.dealerhand)==true{
+                                print("bust")
+                                self.playerChips=self.playerChips+2*self.betamount
+                            }
+                            
+                        }
+                    }) {
+                        Text("Dealer go")
+                    }
+                    
                     
                 }
                
-                
+                VStack{
+                    Text("player Total hand " + String(totalBlackJackHand(hand: playerhand)))
+                    Text("dealer Total hand " + String(totalBlackJackHand(hand: dealerhand)))
+                }
                 VStack {
                     VStack{
                     Text("Player name " + self.playerName)
@@ -267,7 +296,8 @@ struct ContentView: View {
                     Text("cardsdealt " + String(self.cardsdealt))
                     Text("showerdealerhandbool " + String(self.showdealerhandbool))
                     Text("doing inital deal " + String(self.doingInitialDeal))
-                    Text("player asking for cards " + String(playerAskingForCards))
+                        Text("player asking for cards " + String(self.playerAskingForCards))
+                        Text("player has bust alert" + String(self.playerHasBustAlert))
                     }
                          
                     HStack{

@@ -10,9 +10,8 @@ import SwiftUI
 
 struct ContentView: View {
     
-    //@State var card1: card = card(rank: .five, suit: .clubs)
-    //@State var card2: card = card(rank: .joker, suit: .clubs)
-    //@State var card3: card = card(rank: .joker, suit: .clubs)
+    
+
     @State var dealerhand: [card] = []
     @State var playerhand: [card] = []
     var deck1: deck = deck()
@@ -99,6 +98,8 @@ struct ContentView: View {
         
         ZStack{
             Image("Background")
+                .resizable()
+                .edgesIgnoringSafeArea(.all)
             
             VStack{
                 
@@ -112,20 +113,20 @@ struct ContentView: View {
                             Image("back")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 100, height: 100)
+                            .frame(minWidth: 50, idealWidth: 100, maxWidth: 100, minHeight: 50, idealHeight: 100, maxHeight: 100, alignment: .center)
                         }
                         else{
                             Image(self.dealerhand[0].simpleDescription())
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 100, height: 100)
+                            .frame(minWidth: 50, idealWidth: 100, maxWidth: 100, minHeight: 50, idealHeight: 100, maxHeight: 100, alignment: .center)
                         }
                         
                         ForEach(1..<dealerhand.count, id: \.self){
                             number in Image(self.dealerhand[number].simpleDescription())
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 100, height: 100)
+                            .frame(minWidth: 50, idealWidth: 100, maxWidth: 100, minHeight: 50, idealHeight: 100, maxHeight: 100, alignment: .center)
                         }
                     }
                     }
@@ -136,81 +137,14 @@ struct ContentView: View {
                     
                 }
                 
-                //bet button
                 
-                /*
-                //shuffle button
-                Button(action: {
-                    print("Shuffle pressed")
-                    self.deck1.shuffleDeck()
-                    }) {Text("Shuffle")}
-                 */
-                
-                /*
-                // deal button
-                Button(action: {
-                    print("Deal pressed")
-                    if self.doingInitialDeal == true{
-                        self.initialDeal()
-                        self.cardsdealt = true
-                        self.doingInitialDeal = false
-                    }
-                }) {Text("Deal")}
-
-                 */
-                /*
-                //show dealer hand button
-                Button(action: {
-                print("show dealer hand pressed")
-                self.showdealerhandbool.toggle() // = true
-                //self.card1=self.deck1.dealCard()
-                }) {Text("Show dealer hand")}
-                */
-                /*
-                //clear hand button
-                Button(action: {
-                print("clear hand")
-                self.dealerhand=[]
-                self.cardsdealt=false
-                //self.showdealerhandbool.toggle() // = true
-                //self.card1=self.deck1.dealCard()
-                }) {Text("clear hand")}
-                */
-                /*
-                //reset game button
-                Button(action: {
-                print("reset game")
-                    self.playerHasBustAlert=false
-                    self.cardsdealt=false
-                    self.alreadyBetAlert=false
-                    self.showBetAlert=false
-                    self.playerHasBet=false
-                    self.playerAskingForCards=false
-                    self.dealerPlaying=false
-                    self.betAllowed=true
-                    self.showdealerhandbool=false
-                    self.deck1.resetDeck()
-                    self.dealerhand=[]
-                    self.playerhand=[]
-                    self.doingInitialDeal=true
-                    //self.deck1.buildDeck()
-                    //self.showdealerhandbool.toggle() // = true
-                }) {Text("reset game")}
-                */
-                /*
-                //number of cards in deck
-                HStack{
-                    Text("Cards left: " + String(self.deck1.numberOfCards()))
-                }
- */
-                //player hand hstack
                 HStack{
                     if self.cardsdealt == true{
                         ForEach(0..<playerhand.count, id: \.self){
                             number in Image(self.playerhand[number].simpleDescription())
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 100, height: 100)
+                            .frame(minWidth: 50, idealWidth: 100, maxWidth: 100, minHeight: 50, idealHeight: 100, maxHeight: 100, alignment: .center)
                         }
                     }
                 }
@@ -230,34 +164,8 @@ struct ContentView: View {
                 
                 VStack {
                     
-                    /*
-                    VStack{
-                    Text("Player name " + self.playerName)
-                    Text("Chips " + String(self.playerChips))
-                    Text("Bet amount" + String(betamount))
-                    Text("Bool check")
-                    Text("Check if bust " + String(checkIfBust(hand: playerhand)))
-                    Text("showdealerhandbool " + String(self.showdealerhandbool))
-                    Text("cardsdealt " + String(self.cardsdealt))
-                        Text("doingInitialDeal " + String(self.doingInitialDeal))
-                    }
-                     */
-                    /*
-                    VStack{
-                    Text("Bet allowed " + String(self.betAllowed))
-                    Text("Amount to bet " + String(self.amounttobet))
-                    Text("Show bet alert" + String(self.showBetAlert))
-                    Text("Player has bet " + String(self.playerHasBet))
-                    Text("ALready bet alert " + String(self.alreadyBetAlert))
-                    Text("cardsdealt " + String(self.cardsdealt))
-                    Text("showerdealerhandbool " + String(self.showdealerhandbool))
-                    Text("doing inital deal " + String(self.doingInitialDeal))
-                        Text("player asking for cards " + String(self.playerAskingForCards))
-                        Text("player has bust alert" + String(self.playerHasBustAlert))
-                    }
-                    */
                     HStack{
-                        if self.alreadyBetAlert==false{
+                        if self.alreadyBetAlert==false {
                             Button(action: {
                             print("bet pressed")
                                 if self.playerHasBet==false{
@@ -289,18 +197,18 @@ struct ContentView: View {
                                     Alert(title: Text("You do not have enough chips. Choose another amount"), dismissButton: .default(Text("Dismiss")))
                                 }
                         }
-                        /*
-                        if self.alreadyBetAlert==false{
-                            Text("Desired bet: "+String(self.amounttobet) )
-                        }
-                        */
+                    
                     }
                     
                     HStack{
-                        Text("0")
-                        Slider(value: $slidervalue, in: 0...100, step: 0.1, onEditingChanged:{_ in self.amounttobet=Int(self.slidervalue)} )
-                        //self.amounttobet=Int(slidervalue)
-                        Text("100")
+                        
+                        if self.cardsdealt==false{
+                            Text("0")
+                            Slider(value: $slidervalue, in: 0...100, step: 0.1, onEditingChanged:{_ in self.amounttobet=Int(self.slidervalue)} )
+                            //self.amounttobet=Int(slidervalue)
+                            Text("100")
+                        }
+                        
                     }
                     HStack{
                         Text("Chips: " + String(self.playerChips))
@@ -319,21 +227,13 @@ struct ContentView: View {
                                     print("bust")
                                     
                                     self.playerHasBustAlert=true
-                                    //                                    self.cardsdealt=false
-                                    self.alreadyBetAlert=false
+                                    
                                     self.showBetAlert=false
                                     self.playerHasBet=false
                                     self.playerAskingForCards=false
                                     self.dealerPlaying=false
                                     self.betAllowed=true
-                                    /*
-                                    self.showdealerhandbool=false
-                                    self.cardsdealt=false
-                                    self.deck1.resetDeck()
-                                    self.dealerhand=[]
-                                    self.playerhand=[]
-                                    self.doingInitialDeal=true
-                                    */
+                                   
                                 }
                             }
                         }) {Text("Hit")}
@@ -371,19 +271,17 @@ struct ContentView: View {
                                         print("bust")
                                         self.result = "Dealer has busted."
                                         self.resultcase=1
-                                        //self.playerChips=self.playerChips+2*self.betamount
-                                        //self.dealerPlaying = false
-                                        //self.alreadyBetAlert=false
+                                       
 
                                         self.dealergoalert=true
-                                        //self.alreadyBetAlert=false
+                                        
                                     }
                                     else if self.totalBlackJackHand(hand: self.dealerhand)==self.totalBlackJackHand(hand: self.playerhand){
                                         print("This is a split pot. Player does not lose anything")
                                         self.result="This is a split pot. Player does not lose anything."
-                                        //self.playerChips=self.playerChips+self.betamount
+                                        
                                         self.resultcase=3
-                                        //self.alreadyBetAlert=false
+                                        
 
                                         self.dealergoalert=true
                                     }
@@ -391,20 +289,19 @@ struct ContentView: View {
                                         print("dealer wins")
                                         self.result="The dealer wins."
                                         self.showBetAlert=false
-                                        //self.dealerPlaying = false
-                                        //self.alreadyBetAlert=false
+                                        
 
                                         self.dealergoalert=true
-                                        //self.alreadyBetAlert=false
+                                        
                                     }
                                 }
                                 else if self.totalBlackJackHand(hand: self.dealerhand)==self.totalBlackJackHand(hand: self.playerhand){
                                     print("This is a split pot. Player does not lose anything")
                                     self.result="This is a split pot. Player does not lose anything."
                                     self.resultcase=3
-                                    //self.playerChips=self.playerChips+self.betamount
+                                    
                                     self.showBetAlert=false
-                                    //self.alreadyBetAlert=false
+                                    
 
                                     self.dealergoalert=true
                                 }
@@ -465,6 +362,7 @@ struct ContentView: View {
                             }) {
                                 Text("Clear table")
                             }
+                        
                         }
                     }
                 }
@@ -478,19 +376,8 @@ struct ContentView: View {
     }
 }
 
-extension View {
-    func stacked(at position: Int, in total: Int) -> some View {
-        let offset = CGFloat(total - position)
-        return self.offset(CGSize(width: 0, height: offset * 10))
-    }
-}
 
-extension Text {
-    func stacked(at position: Int, in total: Int) -> some View {
-        let offset = CGFloat(total - position)
-        return self.offset(CGSize(width: 0, height: offset * 10))
-    }
-}
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

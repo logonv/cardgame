@@ -17,6 +17,7 @@ struct ContentView: View {
     var deck1: deck = deck()
 
     @State var playerChips: Int = 90
+    @State var playerChipsFloat: Float=0.0
 
     @State var playerName: String = "Player Name"
     @State var amounttobet: Int = 50
@@ -96,6 +97,7 @@ struct ContentView: View {
     
     var body: some View {
         
+        GeometryReader{ geometry in
         ZStack{
             Image("Background")
                 .resizable()
@@ -109,45 +111,48 @@ struct ContentView: View {
                 //dealer cards hstack
                 HStack{
                     if self.cardsdealt == true{
-                        if showdealerhandbool == false{
+                        if self.showdealerhandbool == false{
                             Image("back")
                             .resizable()
                             .scaledToFit()
-                            .frame(minWidth: 50, idealWidth: 100, maxWidth: 100, minHeight: 50, idealHeight: 100, maxHeight: 100, alignment: .center)
+                            .frame(minWidth: geometry.size.width/7, idealWidth: geometry.size.width/4, maxWidth: geometry.size.width/3, alignment: .center)
                         }
                         else{
                             Image(self.dealerhand[0].simpleDescription())
                             .resizable()
                             .scaledToFit()
-                            .frame(minWidth: 50, idealWidth: 100, maxWidth: 100, minHeight: 50, idealHeight: 100, maxHeight: 100, alignment: .center)
+                            .frame(minWidth: geometry.size.width/7, idealWidth: geometry.size.width/4, maxWidth: geometry.size.width/3, alignment: .center)
                         }
                         
-                        ForEach(1..<dealerhand.count, id: \.self){
+                        ForEach(1..<self.dealerhand.count, id: \.self){
                             number in Image(self.dealerhand[number].simpleDescription())
                             .resizable()
                             .scaledToFit()
-                            .frame(minWidth: 50, idealWidth: 100, maxWidth: 100, minHeight: 50, idealHeight: 100, maxHeight: 100, alignment: .center)
+                                .frame(minWidth: geometry.size.width/7, idealWidth: geometry.size.width/4, maxWidth: geometry.size.width/3, alignment: .center)
                         }
                     }
                     }
                     if self.showdealerhandbool==true{
-                        Text("Dealer's total is " + String(totalBlackJackHand(hand: dealerhand)))
+                        Text("Dealer's total is " + String(self.totalBlackJackHand(hand: self.dealerhand)))
                         
                     }
                     
                 }
+                //.position(x: geometry.size.width/2, y: geometry.size.height/5)
+               
                 
                 
                 HStack{
                     if self.cardsdealt == true{
-                        ForEach(0..<playerhand.count, id: \.self){
+                        ForEach(0..<self.playerhand.count, id: \.self){
                             number in Image(self.playerhand[number].simpleDescription())
                             .resizable()
                             .scaledToFit()
-                            .frame(minWidth: 50, idealWidth: 100, maxWidth: 100, minHeight: 50, idealHeight: 100, maxHeight: 100, alignment: .center)
+                            .frame(minWidth: geometry.size.width/7, idealWidth: geometry.size.width/4, maxWidth: geometry.size.width/3, alignment: .center)
                         }
                     }
                 }
+              
                 
                
                 
@@ -156,7 +161,7 @@ struct ContentView: View {
                 //totals stack
                 VStack{
                     if self.cardsdealt == true{
-                    Text("Player's total is " + String(totalBlackJackHand(hand: playerhand)))
+                        Text("Player's total is " + String(self.totalBlackJackHand(hand: self.playerhand)))
                     //Text("dealer Total hand " + String(totalBlackJackHand(hand: dealerhand)))
                         
                     }
@@ -193,7 +198,7 @@ struct ContentView: View {
                                     self.alreadyBetAlert=true
                                 }
                             }) {Text("Bet "+String(self.amounttobet))}
-                                .alert(isPresented: $showBetAlert) { () -> Alert in
+                                .alert(isPresented: self.$showBetAlert) { () -> Alert in
                                     Alert(title: Text("You do not have enough chips. Choose another amount"), dismissButton: .default(Text("Dismiss")))
                                 }
                         }
@@ -203,10 +208,13 @@ struct ContentView: View {
                     HStack{
                         
                         if self.cardsdealt==false{
+                            //Spacer()
                             Text("0")
-                            Slider(value: $slidervalue, in: 0...100, step: 0.1, onEditingChanged:{_ in self.amounttobet=Int(self.slidervalue)} )
+                            //self.playerChipsFloat=Float(self.playerChips)
+                            Slider(value: self.$slidervalue, in: 0...100, step: 0.1, onEditingChanged:{_ in self.amounttobet=Int(self.slidervalue)} )
                             //self.amounttobet=Int(slidervalue)
                             Text("100")
+                            Spacer()
                         }
                         
                     }
@@ -219,30 +227,30 @@ struct ContentView: View {
                     }
                     
                     HStack{
-                        if self.playerPlaying==true{
-                        Button(action: {
-                            if self.playerAskingForCards==true{
-                                self.playerhand.append(self.deck1.dealCard())
-                                if self.checkIfBust(hand: self.playerhand)==true{
-                                    print("bust")
-                                    
-                                    self.playerHasBustAlert=true
-                                    
-                                    self.showBetAlert=false
-                                    self.playerHasBet=false
-                                    self.playerAskingForCards=false
-                                    self.dealerPlaying=false
-                                    self.betAllowed=true
-                                   
+                            if self.playerPlaying==true{
+                            Button(action: {
+                                if self.playerAskingForCards==true{
+                                    self.playerhand.append(self.deck1.dealCard())
+                                    if self.checkIfBust(hand: self.playerhand)==true{
+                                        print("bust")
+                                        
+                                        self.playerHasBustAlert=true
+                                        
+                                        self.showBetAlert=false
+                                        self.playerHasBet=false
+                                        self.playerAskingForCards=false
+                                        self.dealerPlaying=false
+                                        self.betAllowed=true
+                                       
+                                    }
                                 }
+                            }) {Text("Hit")}
+                                .alert(isPresented: self.$playerHasBustAlert) { () -> Alert in
+                                Alert(title: Text("You have bust"), dismissButton: .default(Text("Dismiss")){
+                                    self.playerPlaying=false
+                                    })
+                                
                             }
-                        }) {Text("Hit")}
-                        .alert(isPresented: $playerHasBustAlert) { () -> Alert in
-                            Alert(title: Text("You have bust"), dismissButton: .default(Text("Dismiss")){
-                                self.playerPlaying=false
-                                })
-                            
-                        }
                         
                         //stick button
                             if self.playerPlaying==true{
@@ -316,17 +324,11 @@ struct ContentView: View {
                                     
                                     //self.alreadyBetAlert=false
                                 }
-                                
-                                
-                              
-                                
-                                
-                                
                             }) {
                             Text("Show dealer's next move")
                             }
-                            .alert(isPresented: $dealergoalert) { () -> Alert in
-                                Alert(title: Text("\(result)"), dismissButton: .default(Text("dismiss"), action: {
+                            .alert(isPresented: self.$dealergoalert) { () -> Alert in
+                                Alert(title: Text("\(self.result)"), dismissButton: .default(Text("dismiss"), action: {
                                     if self.resultcase==1{
                                         self.playerChips=self.playerChips+2*self.betamount
                                         //self.resultcase=0
@@ -362,17 +364,16 @@ struct ContentView: View {
                             }) {
                                 Text("Clear table")
                             }
-                        
                         }
                     }
+                    
                 }
- 
-              
-                
+            
             }//end of VStack
-            
-            
+                
         }//end of ZStack
+        }
+        
     }
 }
 

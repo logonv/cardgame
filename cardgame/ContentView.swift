@@ -360,7 +360,7 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        
+                        .frame(minWidth: 0, maxWidth: .infinity)
                     }
                     
                 }//end of VStack

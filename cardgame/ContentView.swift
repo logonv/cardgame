@@ -53,14 +53,6 @@ struct ContentView: View {
         return bet
     }
     
-    func slidervaluetoamounttobet()-> Bool{
-        amounttobet=Int(slidervalue)
-        return true
-    }
-    
-    
-    
-    
     func initialDeal(){
         self.deck1.resetDeck()
         self.dealerhand=[]
@@ -70,6 +62,7 @@ struct ContentView: View {
         self.dealerhand.append(self.deck1.dealCard())
         self.dealerhand.append(self.deck1.dealCard())
         self.playerAskingForCards=true
+        self.slidervalue = Double(self.playerChips / 2)
         self.amounttobet=Int(self.slidervalue)
     }
     
@@ -210,10 +203,8 @@ struct ContentView: View {
                             if self.cardsdealt==false{
                                 //Spacer()
                                 Text("0")
-                                //self.playerChipsFloat=Float(self.playerChips)
-                                Slider(value: self.$slidervalue, in: 0...100, step: 0.1, onEditingChanged:{_ in self.amounttobet=Int(self.slidervalue)} )
-                                //self.amounttobet=Int(slidervalue)
-                                Text("100")
+                                Slider(value: self.$slidervalue, in: 0...Double(self.playerChips), step: 0.1, onEditingChanged:{_ in self.amounttobet=Int(self.slidervalue)} )
+                                Text(String(self.playerChips))
                                 Spacer()
                             }
                             

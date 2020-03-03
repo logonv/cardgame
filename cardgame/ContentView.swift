@@ -244,30 +244,23 @@ struct ContentView: View {
                                             
                                         }
                                     }
-                                }) {Text("Hit")}
+                                })
+                                {Text("Hit")}
                                     .alert(isPresented: self.$playerHasBustAlert) { () -> Alert in
                                         Alert(title: Text("You have bust"), dismissButton: .default(Text("Dismiss")){
                                             self.playerPlaying=false
                                             })
-                                        
                                 }
                                 
                                 //stick button
-                                if self.playerPlaying==true{
-                                    Button(action: {
-                                        
-                                        self.playerAskingForCards = false
-                                        self.dealerPlaying = true
-                                        self.playerPlaying=false
-                                        self.showdealerhandbool = true
-                                        
-                                        
-                                    }) {
-                                        Text("Stick")
-                                    }
-                                    
+                                Button(action: {
+                                    self.playerAskingForCards = false
+                                    self.dealerPlaying = true
+                                    self.playerPlaying=false
+                                    self.showdealerhandbool = true
+                                }) {
+                                    Text("Stick")
                                 }
-                                
                             }
                             
                             if self.dealerPlaying==true{

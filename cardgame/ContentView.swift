@@ -62,8 +62,7 @@ struct ContentView: View {
         self.dealerhand.append(self.deck1.dealCard())
         self.dealerhand.append(self.deck1.dealCard())
         self.playerAskingForCards=true
-        self.slidervalue = Double(self.playerChips / 2)
-        self.amounttobet=Int(self.slidervalue)
+        self.initialiseSliderParams()
     }
     
     func totalBlackJackHand( hand: Array<card>)-> Int{
@@ -86,6 +85,11 @@ struct ContentView: View {
     
     func checkIfBust(hand: Array<card>) -> Bool{
         return self.totalBlackJackHand(hand: hand)>21
+    }
+    
+    func initialiseSliderParams() {
+        self.slidervalue = Double(self.playerChips / 2)
+        self.amounttobet=Int(self.slidervalue)
     }
     
     var body: some View {
@@ -203,8 +207,13 @@ struct ContentView: View {
                             if self.cardsdealt==false{
                                 //Spacer()
                                 Text("0")
-                                Slider(value: self.$slidervalue, in: 0...Double(self.playerChips), step: 0.1, onEditingChanged:{_ in self.amounttobet=Int(self.slidervalue)} )
-                                Text(String(self.playerChips))
+                                Slider(
+                                    value: self.$slidervalue,
+                                    in: 0...Double(self.playerChips > 10 ? self.playerChips : 10),
+                                    step: 0.1,
+                                    onEditingChanged:{_ in self.amounttobet=Int(self.slidervalue)}
+                                )
+                                Text(String(self.playerChips > 10 ? self.playerChips : 10))
                                 Spacer()
                             }
                             
@@ -328,6 +337,7 @@ struct ContentView: View {
                                             self.playerChips=self.playerChips+self.betamount
                                             //self.resultcase=0
                                         }
+                                        self.initialiseSliderParams()
                                         self.dealerPlaying=false
                                     }))
                                 }
